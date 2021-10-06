@@ -1,7 +1,7 @@
 <template>
   <v-container>
       <v-row dense>
-        <v-col cols="6" offset="3">
+        <v-col sm="12" md="6" offset-md="3">
           <v-card class="pa-4" color="grey lighten-4">
             <v-col cols="8" offset="2">
               <LoginForm></LoginForm>

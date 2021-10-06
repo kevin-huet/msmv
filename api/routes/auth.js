@@ -7,16 +7,25 @@ const bcrypt = require("bcrypt");
 /* GET home page. */
 router.post('/login', async function(req, res, next) {
     const { email, password } = req.body
-
     let foundUser = await User.findOne( { email } )
-    const validPassword = await bcrypt.compare(password, foundUser.password);
 
-    if (validPassword) {
-        const token = genToken(foundUser)
-        res.cookie('session', token, { httpOnly: true })
-        res.status(200)
-    } else
-        res.status(401)
+    if (foundUser) {
+        const validPassword = await bcrypt.compare(password, foundUser.password);
+
+        if (validPassword) {
+            const token = genToken(foundUser)
+            res.cookie('session', token, {httpOnly: true})
+            res.status(200).json({ token: token,
+                user: {
+                    username: foundUser.username,
+                    email: foundUser.email
+                }
+            })
+        } else
+            res.status(401).json({})
+    } else {
+        res.status(401).json({})
+    }
 });
 
 router.post('/register', async function (req, res, next) {

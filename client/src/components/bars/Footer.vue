@@ -20,7 +20,7 @@
         class="grey lighten-2 py-4 text-center"
         cols="12"
       >
-        {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
+        {{ new Date().getFullYear() }} — <strong>Mont Saint Michel Voyages</strong>
       </v-col>
     </v-row>
   </v-footer>

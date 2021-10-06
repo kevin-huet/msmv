@@ -1,24 +1,24 @@
 <template>
-  <form>
+  <form @submit.prevent="submit" class="mt-6">
     <v-text-field
-      v-model="name"
+      v-model="code"
       :error-messages="codeErrors"
-      :counter="10"
       label="Code promo"
       required
-      value=""
     ></v-text-field>
     <v-text-field
+      v-model="reduce"
       :error-messages="percentErrors"
       label="Pourcentage"
-      value=""
       required
+      type="number"
     ></v-text-field>
 
     <v-menu
       ref="menu"
       v-model="menu"
       :close-on-content-click="false"
+      :return-value.sync="date"
       transition="scale-transition"
       offset-y
       min-width="auto"
@@ -26,7 +26,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
           v-model="date"
-          label="Birthday date"
+          label="Date d'expiration"
           prepend-icon="mdi-calendar"
           readonly
           v-bind="attrs"
@@ -35,56 +35,46 @@
       </template>
       <v-date-picker
         v-model="date"
-        :active-picker.sync="activePicker"
-        :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
-        min="1950-01-01"
-        @change="save"
-      ></v-date-picker>
+        no-title
+        scrollable
+      >
+        <v-spacer></v-spacer>
+        <v-btn
+          text
+          color="primary"
+          @click="menu = false"
+        >
+          Cancel
+        </v-btn>
+        <v-btn
+          text
+          color="primary"
+          @click="$refs.menu.save(date)"
+        >
+          OK
+        </v-btn>
+      </v-date-picker>
     </v-menu>
 
-    <v-btn class="mr-4" @click="submit">submit</v-btn>
+    <v-btn class="mt-6" @click="submit" color="success">Valider</v-btn>
   </form>
 </template>
 
 <script>
-import { validationMixin } from 'vuelidate'
-import { email, maxLength, required } from 'vuelidate/lib/validators'
 
 export default {
   name: 'PromoCodeForm',
-  mixins: [validationMixin],
-  model: {
-    prop: '$value',
-    event: 'change'
-  },
-  validations: {
-    name: { required, maxLength: maxLength(10) },
-    email: { required, email },
-    checkbox: {
-      checked (val) {
-        return val
-      }
-    }
-  },
 
   data: () => ({
-    activePicker: null,
+    reduce: '',
+    code: '',
     date: null,
-    menu: false,
-    dateFormatted: null,
-    open: false,
-    name: '',
-    email: '',
-    checkbox: false
+    menu: false
   }),
 
   computed: {
     codeErrors () {
-      const errors = []
-      if (!this.$v.name.$dirty) return errors
-      !this.$v.name.maxLength && errors.push('Name must be at most 10 characters long')
-      !this.$v.name.required && errors.push('Name is required.')
-      return errors
+      return []
     },
     percentErrors () {
       return []
@@ -97,11 +87,17 @@ export default {
     save (date) {
       this.$refs.menu.save(date)
     },
-    update () {
-      this.$emit('change', this.dateFormatted)
-    },
     submit () {
-      this.$v.$touch()
+      this.$http.post(process.env.VUE_APP_BASE_API_URL + 'code/promo/add', {
+        code: this.code,
+        reduce: this.reduce,
+        expiration: this.date
+      }).then(r => {
+        console.log(r.data)
+        this.$emit('tableUpdateEvent', r.data.promoCode)
+      }).catch(err => {
+        console.log(err)
+      })
     }
   }
 }

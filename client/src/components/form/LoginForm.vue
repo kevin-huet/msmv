@@ -1,13 +1,13 @@
 <template>
-  <form>
+  <form class="login" @submit.prevent="login">
     <v-text-field
+      v-model="email"
       :error-messages="emailErrors"
       label="Email"
       required
-      @input="$v.name.$touch()"
-      @blur="$v.name.$touch()"
     ></v-text-field>
     <v-text-field
+      v-model="password"
       :error-messages="passwordErrors"
       label="password"
       required
@@ -16,30 +16,25 @@
       :type="show ? 'text' : 'password'"
       @click:append="show = !show"
     ></v-text-field>
-    <v-btn color="success" class="mr-4" @click="submit">submit</v-btn>
+    <v-btn color="success" class="mr-4" type="submit">submit</v-btn>
   </form>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { email, maxLength, required } from 'vuelidate/lib/validators'
-
 export default {
   name: 'LoginForm',
   mixins: [validationMixin],
 
   validations: {
     name: { required, maxLength: maxLength(10) },
-    email: { required, email },
-    checkbox: {
-      checked (val) {
-        return val
-      }
-    }
+    email: { required, email }
   },
 
   data: () => ({
     email: '',
+    password: '',
     show: false,
     rules: {
       required: value => !!value || 'Required.',
@@ -47,6 +42,16 @@ export default {
       emailMatch: () => ("The email and password you entered don't match")
     }
   }),
+
+  methods: {
+    login: function () {
+      const email = this.email
+      const password = this.password
+      this.$store.dispatch('login', { email, password })
+        .then(() => this.$router.push('/backoffice'))
+        .catch(err => console.log(err))
+    }
+  },
 
   computed: {
     emailErrors () {
@@ -58,12 +63,6 @@ export default {
     },
     passwordErrors () {
       return []
-    }
-  },
-
-  methods: {
-    submit () {
-      this.$v.$touch()
     }
   }
 }

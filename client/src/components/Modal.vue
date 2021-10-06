@@ -5,13 +5,13 @@
     max-width="70vw"
   >
     <template v-slot:activator="{ on, attrs }">
-      <v-btn color="primary" v-bind="attrs" v-on="on">
+      <v-btn color="success" v-bind="attrs" v-on="on">
         {{ btnTitle }}
       </v-btn>
     </template>
     <template v-slot:default="dialog">
       <v-card>
-        <v-toolbar color="primary" dark>Opening from the top</v-toolbar>
+        <v-toolbar>{{ btnTitle }}</v-toolbar>
         <v-card-text>
           <slot/>
         </v-card-text>

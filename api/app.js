@@ -11,7 +11,11 @@ let passport = require('passport')
 let indexRouter = require('./routes/index')
 let usersRouter = require('./routes/users')
 let authRouter = require('./routes/auth')
+let bookingRouter = require('./routes/booking')
+let codeBarrierRouter = require('./routes/barrierCode')
+let codePromoRouter = require('./routes/promoCode')
 let app = express()
+let cors = require('cors')
 let passportStrategy = require('./middlewares/passport')
 
 mongoose.connect("mongodb://localhost/test", {useNewUrlParser: true, useUnifiedTopology: true});
@@ -23,6 +27,7 @@ mongoose.connection.once('open',function(){
 
 app.use(passport.initialize());
 app.use(bodyParser.json())
+app.use(cors({ origin: ['http://localhost:8080'], }))
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
@@ -41,7 +46,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
-
+app.use('/code', codeBarrierRouter)
+app.use('/code', codePromoRouter)
+app.use('/booking', bookingRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404))
