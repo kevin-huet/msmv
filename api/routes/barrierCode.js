@@ -81,6 +81,8 @@ router.post('/barrier/use-barrier-code', async (req, res) => {
 })
 
 router.delete('/barrier/delete', passport.authenticate('jwt',{session: false}, null), async (req, res, next) => {
+    const data = req.body
+    await BarrierCode.findOneAndRemove({ _id: data.id })
     res.status(200).json({})
 })
 

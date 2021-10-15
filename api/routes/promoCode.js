@@ -24,11 +24,9 @@ router.post('/promo/add', async (req, res) => {
 })
 
 router.delete('/promo/delete', async (req, res) => {
-    const { code } = req.body
-    PromoCode.findOneAndRemove({ code: code }).then().catch(err => {
-        res.status(400).json({err})
-    })
-    res.status(200).json({ deletedCode: code })
+    const data = req.body
+    await PromoCode.findOneAndRemove({ _id: data.id })
+    res.status(200).json({})
 })
 
 router.post('/promo/edit', async (req, res) => {

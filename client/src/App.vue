@@ -32,3 +32,9 @@ export default {
   }
 }
 </script>
+<style>
+a.primary--text {
+  color: #e5e9ec !important;
+  caret-color: #f4f4f4 !important;
+}
+</style>

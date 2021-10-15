@@ -11,6 +11,12 @@ router.get('/all', passport.authenticate('jwt',{session: false}), async (req, re
     })
 })
 
+router.delete('/delete', passport.authenticate('jwt',{session: false}, null), async (req, res) => {
+    const data = req.body
+    await Booking.findOneAndRemove({ _id: data.id })
+    res.status(200).json({})
+})
+
 router.get('/prices/all', passport.authenticate('jwt',{session: false}, null), async (req, res) => {
     res.status(200).json({
         prices: {

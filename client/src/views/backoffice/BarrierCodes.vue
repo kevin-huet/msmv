@@ -5,12 +5,19 @@
       <v-row>
         <v-col cols="4">
           <v-text-field v-model="search" append-icon="mdi-magnify"
-            label="Search" single-line hide-details>
+            label="Rechercher" single-line hide-details>
           </v-text-field>
         </v-col>
         <v-col cols="12">
           <v-data-table :search="search" :headers="headers"
-            :items="data" :items-per-page="5" class="elevation-1">
+            :items="data" :items-per-page="5" class="elevation-1"
+                        :header-props="{
+              sortByText: 'Trier par'
+            }"
+                        :footer-props="{
+              'page-text': '',
+              'items-per-page-text':'Elements par page'
+            }">
             <template v-slot:item.createdAt="{ item }">
               {{ formatDate(item.createdAt) }}
             </template>
@@ -88,6 +95,17 @@ export default {
     })
   },
   methods: {
+    deleteItem (item) {
+      this.$http.delete(process.env.VUE_APP_BASE_API_URL + 'code/barrier/delete', {
+        data: {
+          id: item._id
+        }
+      }).then(r => {
+        console.log(r)
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     tableUpdateEvent (event) {
       this.data.push(event)
     },

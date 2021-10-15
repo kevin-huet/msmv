@@ -6,7 +6,7 @@
         <v-col cols="4">
           <v-text-field v-model="search"
                         append-icon="mdi-magnify"
-                        label="Search"
+                        label="Rechercher"
                         single-line
                         hide-details>
           </v-text-field>
@@ -17,7 +17,14 @@
             :headers="headers"
             :items="data"
             :items-per-page="5"
-            class="elevation-1">
+            class="elevation-1"
+            :header-props="{
+              sortByText: 'Trier par'
+            }"
+            :footer-props="{
+              'page-text': '',
+              'items-per-page-text':'Elements par page'
+            }">
           </v-data-table>
         </v-col>
         <v-col cols="12">
@@ -65,11 +72,10 @@ export default {
       .then(r => {
         this.prices = r.data.prices
         this.data = [
-          this.prices.child.price,
-          this.prices.young.price,
-          this.prices.adult.price
+          this.prices.child,
+          this.prices.young,
+          this.prices.adult
         ]
-        console.log(this.prices)
       })
       .catch(err => {
         console.log(err)

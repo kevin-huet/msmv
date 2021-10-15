@@ -1,8 +1,9 @@
-let express = require('express')
-let router = express.Router()
-let User = require('../models/user.model')
+const express = require('express')
+const router = express.Router()
+const User = require('../models/user.model')
 const jwt = require('jsonwebtoken')
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcrypt')
+const recaptcha = require('../middlewares/recaptcha')
 
 /* GET home page. */
 router.post('/login', async function(req, res, next) {

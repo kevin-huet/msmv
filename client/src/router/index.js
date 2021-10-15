@@ -64,6 +64,11 @@ const routes = [
     name: 'ClientBarrierCode',
     component: () => import('../views/client/BarrierCode')
   },
+  {
+    path: '/backoffice/users',
+    name: 'Users',
+    component: () => import('../views/backoffice/Users')
+  },
   { path: '/404', component: () => import('../views/error/404.vue') },
   { path: '*', redirect: '/404' }
 ]

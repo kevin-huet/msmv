@@ -3,7 +3,7 @@
     <v-app-bar>
       <v-app-bar-nav-icon class="d-flex d-sm-none" @click="drawer = true"></v-app-bar-nav-icon>
       <v-avatar style="width: 120px" :tile="true">
-        <img src="msmv_logo.png" alt="logo">
+        <img src="@/assets/msmv_logo.png" alt="logo">
       </v-avatar>
       <v-spacer></v-spacer>
       <v-btn text value="left" v-if="isLoggedIn">Utilisateurs</v-btn>

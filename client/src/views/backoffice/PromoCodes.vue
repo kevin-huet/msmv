@@ -7,7 +7,7 @@
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
-            label="Search"
+            label="Rechercher"
             single-line
             hide-details>
           </v-text-field>
@@ -18,6 +18,13 @@
             :headers="headers"
             :items="data"
             :items-per-page="10"
+            :header-props="{
+              sortByText: 'Trier par'
+            }"
+            :footer-props="{
+              'page-text': '',
+              'items-per-page-text':'Elements par page'
+            }"
             class="elevation-1">
             <template v-slot:item.createAt="{ item }">
               {{ formatDate(item.createAt) }}
@@ -60,7 +67,15 @@ export default {
 
     },
     deleteItem (item) {
-
+      this.$http.delete(process.env.VUE_APP_BASE_API_URL + 'code/promo/delete', {
+        data: {
+          id: item._id
+        }
+      }).then(r => {
+        console.log(r)
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   data () {

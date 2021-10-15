@@ -22,7 +22,12 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
+import Vue from 'vue'
 import { email, maxLength, required } from 'vuelidate/lib/validators'
+import { VueReCaptcha } from 'vue-recaptcha-v3'
+
+Vue.use(VueReCaptcha, { siteKey: '6LewL7ccAAAAADVHDgl0GiCtYiPltEI0nuCXlL7y' })
+
 export default {
   name: 'LoginForm',
   mixins: [validationMixin],
