@@ -39,7 +39,7 @@ router.post('/register', async function (req, res, next) {
     }
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
-    const newUser = new User({ firstName: first_name, lastName: last_name, email: email, password: hashPassword })
+    const newUser = new User({ firstname: first_name, lastname: last_name, email: email, password: hashPassword })
     await newUser.save()
     const token = genToken(newUser)
     res.status(200).json({ token })
