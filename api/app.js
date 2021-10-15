@@ -27,7 +27,7 @@ mongoose.connection.once('open',function(){
 
 app.use(passport.initialize());
 app.use(bodyParser.json())
-app.use(cors({ origin: ['http://localhost:8080'], }))
+app.use(cors({ origin: [process.env.CORS_AUTHORIZE], }))
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
