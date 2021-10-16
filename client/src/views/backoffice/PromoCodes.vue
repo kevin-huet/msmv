@@ -32,6 +32,9 @@
             <template v-slot:item.expiration="{ item }">
               {{ formatDate(item.expiration) }}
             </template>
+            <template v-slot:no-data>
+                Aucune donnée
+            </template>
             <template v-slot:item.actions="{ item }">
               <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
               <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
@@ -72,6 +75,8 @@ export default {
           id: item._id
         }
       }).then(r => {
+        this.editedIndex = this.data.indexOf(item)
+        this.data.splice(this.editedIndex, 1)
         console.log(r)
       }).catch(err => {
         console.log(err)

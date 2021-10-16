@@ -1,19 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import store from '../store/index'
 
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    meta: {
-      requiresAuth: true
-    },
-    component: Home
-  },
   {
     path: '/backoffice',
     name: 'Backoffice',

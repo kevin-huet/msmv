@@ -110,6 +110,7 @@ import { required, maxLength, email } from 'vuelidate/lib/validators'
 export default {
   name: 'BookingForm',
   mixins: [validationMixin],
+  props: ['planPrices', 'dialog'],
   validations: {
     name: { required, maxLength: maxLength(10) },
     email: { required, email },
@@ -122,7 +123,6 @@ export default {
 
   data () {
     return {
-      planPrices: {},
       price: 0,
       menu: false,
       firstname: '',
@@ -139,6 +139,14 @@ export default {
   },
 
   computed: {
+    dialogState: {
+      get () {
+        return this.dialog
+      },
+      set (val) {
+        this.$emit('close', val)
+      }
+    },
     checkboxErrors () {
       const errors = []
       if (!this.$v.checkbox.$dirty) return errors
@@ -173,14 +181,6 @@ export default {
       this.price = (this.planPrices.child.price * this.child) + (this.planPrices.adult.price * this.adult) + (this.planPrices.young.price * this.young)
     }
   },
-  mounted () {
-    this.$http.get('http://localhost:3000/booking/prices/standard')
-      .then((res) => {
-        this.planPrices = res.data.prices
-        console.log(this.prices)
-      })
-      .catch(err => console.log(err))
-  },
   methods: {
     submit () {
       this.$http.post(process.env.VUE_APP_BASE_API_URL + 'booking/add', {
@@ -197,6 +197,9 @@ export default {
             adult: this.adult
           }
         }
+      }).then(r => {
+        console.log('send event')
+        this.dialogState = false
       })
     }
   }

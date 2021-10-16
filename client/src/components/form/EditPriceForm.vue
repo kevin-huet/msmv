@@ -48,9 +48,9 @@ export default {
     }
   },
   mounted () {
-    this.adult = this.planPrices.adult.price
-    this.young = this.planPrices.young.price
-    this.child = this.planPrices.child.price
+    this.adult = (this.planPrices.adult) ? this.planPrices.adult.price : 0
+    this.young = (this.planPrices.young) ? this.planPrices.young.price : 0
+    this.child = (this.planPrices.child) ? this.planPrices.child.price : 0
     console.log(this.adult)
   }
 }

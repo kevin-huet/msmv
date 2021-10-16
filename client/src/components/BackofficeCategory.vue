@@ -15,8 +15,8 @@
         </v-list-item-icon>
       </v-list-item>
       <v-card-actions>
-        <router-link :to="link" class="link">
-        <v-btn color="success">
+        <router-link :event="!disabled ? 'click' : ''" :disabled="disabled" :to="link" class="link">
+        <v-btn :disabled="disabled" color="success">
           Accèder
         </v-btn>
         </router-link>
@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  props: ['title', 'description', 'link', 'size', 'icon'],
+  props: ['title', 'description', 'link', 'size', 'icon', 'disabled'],
   name: 'BackofficeCategory'
 }
 </script>

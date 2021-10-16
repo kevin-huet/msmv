@@ -2,6 +2,7 @@
   <v-container>
     <v-card class="pa-4" color="grey lighten-4">
       <Breadcrumbs :items="routes"></Breadcrumbs>
+      <Alert v-if="this.disabled" icon="mdi-alert-circle" color="red" border="left" :text="priceNotDefined"></Alert>
       <v-row>
         <v-col cols="4">
           <v-text-field v-model="search"
@@ -11,7 +12,7 @@
             hide-details>
           </v-text-field>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12" >
           <v-data-table :search="search" :headers="headers" class="elevation-1"
             :items="data" :items-per-page="5"
             :header-props="{
@@ -31,11 +32,14 @@
               <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
               <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
             </template>
+            <template v-slot:no-data>
+              Aucune donnée
+            </template>
           </v-data-table>
         </v-col>
         <v-col cols="12">
-          <Modal btn-title="Ajouter une réservation" :component-name="componentName">
-              <BookingForm></BookingForm>
+          <Modal @close="close" :dialog="dialog" btn-title="Ajouter une réservation" :component-name="componentName" :disabled="this.disabled">
+              <BookingForm @close="close" :dialog="dialog" :planPrices="this.planPrices"></BookingForm>
           </Modal>
         </v-col>
       </v-row>
@@ -48,11 +52,14 @@ import Breadcrumbs from '@/components/bars/Breadcrumbs'
 import Modal from '@/components/Modal'
 import BookingForm from '@/components/form/BookingForm'
 import moment from 'moment'
+import Alert from '@/components/Alert'
 export default {
   name: 'Bookings',
-  components: { BookingForm, Modal, Breadcrumbs },
+  components: { Alert, BookingForm, Modal, Breadcrumbs },
   data () {
     return {
+      priceNotDefined: "Les prix ne sont pas défini. Veuillez les définir avant d'ajouter de nouvelles réservations",
+      disabled: false,
       tabs: [
         { title: 'Standard' },
         { title: 'Rêve & Charme' }
@@ -76,16 +83,23 @@ export default {
       dialog: false,
       search: '',
       data: [
-      ]
+      ],
+      planPrices: null
     }
   },
   methods: {
+    close (event) {
+      console.log(event)
+      this.dialog = event
+    },
     deleteItem (item) {
       console.log(item)
       this.$http.delete(process.env.VUE_APP_BASE_API_URL + 'booking/delete', {
         data: { id: item._id }
       }).then(r => {
         console.log(r)
+        this.editedIndex = this.data.indexOf(item)
+        this.data.splice(this.editedIndex, 1)
       }).catch(err => {
         console.log(err)
       })
@@ -109,6 +123,18 @@ export default {
     }).catch(err => {
       console.log(err)
     })
+
+    this.$http.get(process.env.VUE_APP_BASE_API_URL + 'booking/prices/standard')
+      .then((res) => {
+        this.planPrices = res.data.prices
+        console.log(this.planPrices)
+        for (const [index, value] of Object.entries(this.planPrices)) {
+          if (value === null || value === undefined || index === '') {
+            this.disabled = true
+          }
+        }
+      })
+      .catch(err => console.log(err))
   }
 }
 </script>

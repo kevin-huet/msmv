@@ -8,7 +8,8 @@
                             :description="category.description"
                             :link="category.link"
                             :icon="category.icon"
-                            :size="6"/>
+                            :size="6"
+                            :disabled="category.disabled"/>
       </v-row>
     </v-card>
   </v-container>
@@ -30,8 +31,8 @@ export default {
         { title: 'Code promo', description: '', link: '/backoffice/code/promo', icon: 'mdi-currency-usd-off' },
         { title: 'Code Barrière', description: '', link: '/backoffice/code/barrier', icon: 'mdi-barcode-scan' },
         { title: 'Edition des prix', description: '', link: '/backoffice/pricing', icon: 'mdi-store' },
-        { title: 'Edition du mail de reservation', description: '', link: '/backoffice/bookings/mailing', icon: 'mdi-email-edit' },
-        { title: 'Tests des forfaits', description: '', link: '/backoffice/tests', icon: 'mdi-clipboard-text-search' }
+        { title: 'Edition du mail de reservation', description: '', link: '/backoffice/bookings/mailing', icon: 'mdi-email-edit', disabled: true },
+        { title: 'Gestion utilisateurs', description: '', link: '/backoffice/users', icon: 'mdi-account', disabled: true }
       ]
     }
   }

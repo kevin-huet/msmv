@@ -18,6 +18,9 @@
               'page-text': '',
               'items-per-page-text':'Elements par page'
             }">
+            <template v-slot:item.used="{ item }">
+              {{ item.used ? 'Oui' : 'Non' }}
+            </template>
             <template v-slot:item.createdAt="{ item }">
               {{ formatDate(item.createdAt) }}
             </template>
@@ -39,6 +42,9 @@
             <template v-slot:item.actions="{ item }">
               <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
               <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+            </template>
+            <template v-slot:no-data>
+              Aucune donnée
             </template>
           </v-data-table>
         </v-col>
@@ -62,6 +68,7 @@ export default {
   components: { BarrierCodeForm, Modal, Breadcrumbs },
   data () {
     return {
+      dialog: false,
       routes: [
         { text: 'Accueil Backoffice', disabled: false, exact: true, to: '/backoffice' },
         { text: 'Codes barrière', disabled: true, href: '/backoffice/code/barrier' }
@@ -102,6 +109,8 @@ export default {
         }
       }).then(r => {
         console.log(r)
+        this.editedIndex = this.data.indexOf(item)
+        this.data.splice(this.editedIndex, 1)
       }).catch(err => {
         console.log(err)
       })

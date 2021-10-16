@@ -72,9 +72,9 @@ export default {
       .then(r => {
         this.prices = r.data.prices
         this.data = [
-          this.prices.child,
-          this.prices.young,
-          this.prices.adult
+          { plan: 'Enfant', price: this.prices.child ? this.prices.child.price : 'Non défini' },
+          { plan: 'Jeune', price: this.prices.young ? this.prices.young.price : 'Non défini' },
+          { plan: 'Adulte', price: this.prices.adult ? this.prices.adult.price : 'Non défini' }
         ]
       })
       .catch(err => {

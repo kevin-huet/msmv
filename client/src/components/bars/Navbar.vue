@@ -6,7 +6,6 @@
         <img src="@/assets/msmv_logo.png" alt="logo">
       </v-avatar>
       <v-spacer></v-spacer>
-      <v-btn text value="left" v-if="isLoggedIn">Utilisateurs</v-btn>
       <v-menu
         v-if="isLoggedIn"
         bottom
@@ -27,7 +26,7 @@
             v-for="(item, i) in items"
             :key="i"
             :to="item.link"
-            @click="logout"
+            @click="menuActionClick(item.action)"
           >
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
@@ -63,6 +62,11 @@ export default {
   mounted () {
   },
   methods: {
+    menuActionClick: function (action) {
+      if (action === 'logout') {
+        this.logout()
+      }
+    },
     logout: function () {
       this.$store.dispatch('logout')
         .then(() => {
@@ -74,8 +78,8 @@ export default {
     drawer: false,
     group: null,
     items: [
-      { title: 'Click Me', link: '', method: '' },
-      { title: 'Deconnexion', link: '', method: '' }
+      { title: 'Click Me', link: '', action: 'profile', method: '' },
+      { title: 'Deconnexion', link: '', action: 'logout', method: '' }
     ]
   }),
   computed: {

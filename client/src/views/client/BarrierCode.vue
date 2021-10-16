@@ -102,26 +102,29 @@ export default {
   },
   methods: {
     toStep2 () {
-      this.$http(process.env.VUE_APP_BASE_API_URL + 'code/barrier/client?email=' + this.email).then(r => {
+      this.$http(process.env.VUE_APP_BASE_API_URL + 'code/barrier/client', {
+        params: {
+          email: this.email
+        }
+      }).then(r => {
         this.customer = r.data.customer
         console.log(this.customer)
 
         if (!this.customer) {
           this.toStep3()
         } else {
-
+          this.e1 = 2
         }
       }).catch(err => {
         console.log(err)
       })
-      this.e1 = 2
     },
     toStep3 () {
       this.e1 = 3
       console.log(this.reason)
     },
     submitCodeRequest () {
-      this.$http.post(process.env.VUE_APP_BASE_API_URL + 'code/barrier/use-barrier-code', {
+      this.$http.post(process.env.VUE_APP_BASE_API_URL + 'code/barrier/send/public', {
         email: this.email,
         lastname: this.lastname,
         firstname: this.firstname,
@@ -131,7 +134,7 @@ export default {
   },
   mounted () {
     this.$http.get(process.env.VUE_APP_BASE_API_URL + 'code/barrier/available').then(() => {
-      this.alert = true
+      this.alert = false
     }).catch(() => {
       this.alert = true
     })
