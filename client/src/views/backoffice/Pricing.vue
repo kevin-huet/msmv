@@ -28,8 +28,8 @@
           </v-data-table>
         </v-col>
         <v-col cols="12">
-          <Modal btn-title="Ajouter">
-            <EditPriceForm :planPrices="prices"></EditPriceForm>
+          <Modal @close="close" :dialog="dialog" btn-title="Ajouter">
+            <EditPriceForm @close="close" :dialog="dialog" :planPrices="prices"></EditPriceForm>
           </Modal>
         </v-col>
       </v-row>
@@ -48,6 +48,7 @@ export default {
 
   data () {
     return {
+      dialog: false,
       routes: [
         { text: 'Accueil Backoffice', disabled: false, exact: true, to: '/backoffice' },
         { text: 'Gestion des prix', disabled: true, href: '/backoffice/pricing' }
@@ -65,7 +66,12 @@ export default {
       }
     }
   },
-
+  methods: {
+    close (event) {
+      console.log(event)
+      this.dialog = event
+    }
+  },
   mounted () {
     console.log(process.env.VUE_APP_BASE_API_URL)
     axios.get(process.env.VUE_APP_BASE_API_URL + 'booking/prices/standard')

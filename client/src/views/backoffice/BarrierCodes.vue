@@ -49,8 +49,8 @@
           </v-data-table>
         </v-col>
         <v-col cols="12">
-          <Modal btn-title="Ajouter un code">
-            <BarrierCodeForm @tableUpdateEvent="tableUpdateEvent"/>
+          <Modal @close="close" :dialog="dialog" btn-title="Ajouter un code">
+            <BarrierCodeForm @close="close" :dialog="dialog" @tableUpdateEvent="tableUpdateEvent"/>
           </Modal>
         </v-col>
       </v-row>
@@ -102,6 +102,10 @@ export default {
     })
   },
   methods: {
+    close (event) {
+      console.log(event)
+      this.dialog = event
+    },
     deleteItem (item) {
       this.$http.delete(process.env.VUE_APP_BASE_API_URL + 'code/barrier/delete', {
         data: {

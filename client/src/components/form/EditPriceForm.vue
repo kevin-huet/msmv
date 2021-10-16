@@ -35,6 +35,16 @@ export default {
       young: 0
     }
   },
+  computed: {
+    dialogState: {
+      get () {
+        return this.dialog
+      },
+      set (val) {
+        this.$emit('close', val)
+      }
+    }
+  },
   methods: {
     submit: function () {
       console.log(this.planPrices)
@@ -43,6 +53,7 @@ export default {
         young: this.young,
         adult: this.adult
       }).then(r => {
+        this.dialogState = false
         console.log(r)
       }).catch()
     }

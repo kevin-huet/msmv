@@ -73,6 +73,14 @@ export default {
   }),
 
   computed: {
+    dialogState: {
+      get () {
+        return this.dialog
+      },
+      set (val) {
+        this.$emit('close', val)
+      }
+    },
     codeErrors () {
       return []
     },
@@ -95,6 +103,7 @@ export default {
       }).then(r => {
         console.log(r.data)
         this.$emit('tableUpdateEvent', r.data.promoCode)
+        this.dialogState = false
       }).catch(err => {
         console.log(err)
       })

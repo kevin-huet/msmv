@@ -28,6 +28,14 @@ export default {
   }),
 
   computed: {
+    dialogState: {
+      get () {
+        return this.dialog
+      },
+      set (val) {
+        this.$emit('close', val)
+      }
+    },
     codeErrors () {
       return []
     },
@@ -46,6 +54,7 @@ export default {
         console.log(r.data)
         this.error = false
         this.$emit('tableUpdateEvent', r.data.code)
+        this.dialogState = false
       }).catch(err => {
         console.log(err)
         this.errorMessage = `Le code "${this.code}" existe déjà`

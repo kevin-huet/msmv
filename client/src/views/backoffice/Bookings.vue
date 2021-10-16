@@ -77,7 +77,7 @@ export default {
         { text: 'Date création', value: 'createdAt' },
         { text: 'Prix', value: 'price' },
         { text: 'Forfaits', value: 'plan' },
-        { text: 'Statut', value: 'price' },
+        { text: 'Statut', value: 'status' },
         { text: 'Actions', value: 'actions' }
       ],
       dialog: false,

@@ -42,8 +42,8 @@
           </v-data-table>
         </v-col>
         <v-col cols="12">
-          <Modal btn-title="Ajouter un code">
-            <PromoCodeForm @tableUpdateEvent="tableUpdateEvent"></PromoCodeForm>
+          <Modal @close="close" :dialog="dialog" btn-title="Ajouter un code">
+            <PromoCodeForm @close="close" :dialog="dialog" @tableUpdateEvent="tableUpdateEvent"></PromoCodeForm>
           </Modal>
         </v-col>
       </v-row>
@@ -60,6 +60,10 @@ export default {
   name: 'PromoCodes',
   components: { Modal, Breadcrumbs, PromoCodeForm },
   methods: {
+    close (event) {
+      console.log(event)
+      this.dialog = event
+    },
     tableUpdateEvent (event) {
       this.data.push(event)
     },
@@ -85,6 +89,7 @@ export default {
   },
   data () {
     return {
+      dialog: false,
       componentName: 'PromoCodeForm',
       routes: [
         { text: 'Accueil Backoffice', disabled: false, exact: true, to: '/backoffice' },
