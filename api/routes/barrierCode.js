@@ -23,8 +23,11 @@ router.post('/barrier/add', passport.authenticate('jwt',{session: false}, null),
     const { code } = req.body
     const existCode = await BarrierCode.findOne({ code: code })
 
+    if (!code) {
+        return res.status(400).json({ empty: 1 })
+    }
     if (existCode) {
-        return res.status(400).json({})
+        return res.status(400).json({ alreadyExist: 1 })
     }
     const barrierCode = new BarrierCode({ code }).save()
     res.status(200).json({ code: barrierCode })
@@ -41,22 +44,24 @@ router.post('/barrier/send/private', passport.authenticate('jwt',{session: false
 })
 
 router.post('/barrier/send/public', async (req, res) => {
-    const { email, lastName, firstName, phone, reason } = req.body
-    const barrierCode = await BarrierCode.findOne({ 'used': false })
+    const { email, lastname, firstname, reason } = req.body
+    const code = await BarrierCode.findOne({ used: false })
 
-    if (!barrierCode) {
+    if (!code) {
         return res.status(400).json({})
     }
-    barrierCode.used = true
-    barrierCode.origin = 'public'
-    barrierCode.customer = { email, firstName, lastName, phone, reason }
+    code.used = true
+    code.origin = 'Publique'
+    code.customer = { email, firstname, lastname, reason }
+    await code.save()
     res.status(200).json({})
 })
 
 router.get('/barrier/client', async (req, res) => {
-    const { email } = req.body
-    const barrierCode = BarrierCode.findOne({ 'customer.email': email })
+    const { email } = req.query
+    const barrierCode = await BarrierCode.findOne({ 'customer.email': email })
 
+    console.log(barrierCode)
     res.status(200).json({ customer: ((barrierCode) ? barrierCode.customer : null) })
 })
 
@@ -68,6 +73,7 @@ router.post('/barrier/use-barrier-code', async (req, res) => {
         return res.status(400).json({})
     }
     code.used = true
+    code.origin = 'Privée'
     code.customer = {
         email: email,
         firstname: firstName,
