@@ -11,6 +11,13 @@ router.get('/all', passport.authenticate('jwt',{session: false}), async (req, re
     })
 })
 
+router.put('/update-status', passport.authenticate('jwt',{session: false}, null), async (req, res) => {
+    const { id, status } = req.body
+    console.log(id)
+    await Booking.findOneAndUpdate({ _id: id }, { status: status })
+    res.status(200).json({})
+})
+
 router.delete('/delete', passport.authenticate('jwt',{session: false}, null), async (req, res) => {
     const data = req.body
     await Booking.findOneAndRemove({ _id: data.id })

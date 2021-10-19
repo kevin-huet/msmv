@@ -20,18 +20,26 @@
                     <Alert icon="mdi-alert-circle" color="red" :alert="alert" border="left" :text="notAvailable"></Alert>
                   </v-col>
                   <v-col cols="4">
-                    <v-text-field :disabled="this.alert" v-model="email" label="Email" required/>
+                    <v-text-field
+                      label="E-mail"
+                      v-model="email"
+                      :error-messages="emailErrors"
+                      @input="$v.email.$touch()"
+                      @blur="$v.email.$touch()"
+                      required
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="8"></v-col>
                   <v-col  cols="4">
                     <v-text-field :disabled="this.alert" v-model="lastname" label="Nom"/>
                   </v-col >
                   <v-col cols="8"></v-col>
-                  <v-col  cols="4">
+                  <v-col cols="4">
                     <v-text-field :disabled="this.alert" v-model="firstname" label="Prenom"/>
                   </v-col>
-                  <v-col  cols="12">
-                    <v-checkbox :disabled="this.alert" color="green" v-model="terms" label="J'accepte les conditions générales de vente et la politique de confidentialité.*" required/>
+                  <v-col cols="12">
+                    <v-checkbox @change="$v.terms.$touch()" @blur="$v.terms.$touch()" :error-messages="checkboxErrors" :disabled="this.alert" color="green"
+                                v-model="terms" label="J'accepte les conditions générales de vente et la politique de confidentialité.*" required/>
                   </v-col>
                 </v-row>
               </v-card>
@@ -55,8 +63,11 @@
             <v-stepper-content step="3">
               <v-card class="mb-12" flat>
                 <v-card-subtitle><b>Vos informations</b></v-card-subtitle>
-
                 <v-row class="ml-1">
+                  <v-col cols="12">
+                    <Alert v-if="success" icon="mdi-alert-circle" color="green" :alert="success" border="left" :text="successMessage"></Alert>
+                    <Alert v-if="alert" icon="mdi-alert-circle" color="red" :alert="alert" border="left" :text="notAvailable"></Alert>
+                  </v-col>
                   <v-col cols="5">
                     <v-text-field disabled v-model="email" label="Email" required/>
                     <v-text-field disabled v-model="lastname" label="Nom" required/>
@@ -78,13 +89,17 @@
 
 <script>
 import Alert from '@/components/Alert'
+import { required, email } from 'vuelidate/lib/validators'
+
 export default {
   name: 'BarrierCode',
   components: { Alert },
   data () {
     return {
       notAvailable: 'Code barrière en rupture de stock. Contactez nous ou réessayez ultérieurement',
+      successMessage: 'Votre code est "%CODE%", il vous sera également envoyé par mail',
       alert: false,
+      success: false,
       email: '',
       customer: null,
       reason: '',
@@ -100,8 +115,19 @@ export default {
       ]
     }
   },
+  validations: {
+    email: { required, email },
+    terms: {
+      checked (val) {
+        return val
+      }
+    }
+  },
   methods: {
-    toStep2 () {
+    async toStep2 () {
+      if (await this.$v.$invalid) {
+        return
+      }
       this.$http(process.env.VUE_APP_BASE_API_URL + 'code/barrier/client', {
         params: {
           email: this.email
@@ -109,7 +135,6 @@ export default {
       }).then(r => {
         this.customer = r.data.customer
         console.log(this.customer)
-
         if (!this.customer) {
           this.toStep3()
         } else {
@@ -121,7 +146,6 @@ export default {
     },
     toStep3 () {
       this.e1 = 3
-      console.log(this.reason)
     },
     submitCodeRequest () {
       this.$http.post(process.env.VUE_APP_BASE_API_URL + 'code/barrier/send/public', {
@@ -129,7 +153,30 @@ export default {
         lastname: this.lastname,
         firstname: this.firstname,
         reason: this.reason
+      }).then(r => {
+        this.successMessage = this.successMessage.replace('%CODE%', r.data.code)
+        this.success = true
+        this.error = false
+      }).catch(err => {
+        console.log(err)
+        this.success = false
+        this.error = true
       })
+    }
+  },
+  computed: {
+    checkboxErrors () {
+      const errors = []
+      if (!this.$v.terms.$dirty) return errors
+      !this.$v.terms.checked && errors.push('Vous devez accepter les termes pour continuer')
+      return errors
+    },
+    emailErrors () {
+      const errors = []
+      if (!this.$v.email.$dirty) return errors
+      !this.$v.email.email && errors.push('Must be valid e-mail')
+      !this.$v.email.required && errors.push('E-mail is required')
+      return errors
     }
   },
   mounted () {

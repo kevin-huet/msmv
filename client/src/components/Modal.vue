@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     :value="dialogState"
-    @click:outside="close()"
+    @click:outside="dialogState = false"
     transition="dialog-top-transition"
     scrollable
     max-width="70vw"

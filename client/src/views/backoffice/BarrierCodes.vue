@@ -119,6 +119,10 @@ export default {
         console.log(err)
       })
     },
+    edit (item) {
+      this.$http.put(process.env.VUE_APP_BASE_API_URL + 'code/barrier/update', {
+      })
+    },
     tableUpdateEvent (event) {
       this.data.push(event)
     },

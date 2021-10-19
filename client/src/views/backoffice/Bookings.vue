@@ -14,7 +14,7 @@
         </v-col>
         <v-col cols="12" >
           <v-data-table :search="search" :headers="headers" class="elevation-1"
-            :items="data" :items-per-page="5"
+            :items="data" :items-per-page="5" @click:row="enterSelect"
             :header-props="{
               sortByText: 'Trier par'
             }"
@@ -32,6 +32,11 @@
               <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
               <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
             </template>
+            <template v-slot:item.status="{ item }">
+              <v-select class="fit" outlined dense
+                v-model="item.status" :items="selectItems" @change="updateStatus"
+              ></v-select>
+            </template>
             <template v-slot:no-data>
               Aucune donnée
             </template>
@@ -42,6 +47,14 @@
               <BookingForm @close="close" :dialog="dialog" :planPrices="this.planPrices"></BookingForm>
           </Modal>
         </v-col>
+        <v-snackbar v-model="snackbar" color="primary" timeout="1500" top="true">
+          test
+          <template v-slot:action="{ attrs }">
+            <v-btn text v-bind="attrs" @click="snackbar = false">
+              <v-icon small>mdi-close</v-icon>
+            </v-btn>
+          </template>
+        </v-snackbar>
       </v-row>
     </v-card>
   </v-container>
@@ -58,6 +71,8 @@ export default {
   components: { Alert, BookingForm, Modal, Breadcrumbs },
   data () {
     return {
+      snackbar: false,
+      clickItem: {},
       priceNotDefined: "Les prix ne sont pas défini. Veuillez les définir avant d'ajouter de nouvelles réservations",
       disabled: false,
       tabs: [
@@ -84,16 +99,35 @@ export default {
       search: '',
       data: [
       ],
+      selectItems: [
+        'En attente',
+        'Enregistrée',
+        'Livrée'
+      ],
       planPrices: null
     }
   },
   methods: {
+    updateStatus (value) {
+      console.log(value)
+      console.log(this.clickItem)
+      this.$http.put(process.env.VUE_APP_BASE_API_URL + 'booking/update-status', {
+        id: this.clickItem._id,
+        status: value
+      }).then(r => {
+        console.log(r)
+        this.snackbar = true
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    enterSelect (item) {
+      this.clickItem = item
+    },
     close (event) {
-      console.log(event)
       this.dialog = event
     },
     deleteItem (item) {
-      console.log(item)
       this.$http.delete(process.env.VUE_APP_BASE_API_URL + 'booking/delete', {
         data: { id: item._id }
       }).then(r => {
@@ -105,7 +139,6 @@ export default {
       })
     },
     editItem (item) {
-      console.log(item)
       this.$http.post('').then(r => {
         console.log(item)
       }).catch(err => {
@@ -119,7 +152,6 @@ export default {
   mounted () {
     this.$http.get(process.env.VUE_APP_BASE_API_URL + 'booking/all').then(r => {
       this.data = r.data.bookings
-      console.log(r)
     }).catch(err => {
       console.log(err)
     })
@@ -127,18 +159,24 @@ export default {
     this.$http.get(process.env.VUE_APP_BASE_API_URL + 'booking/prices/standard')
       .then((res) => {
         this.planPrices = res.data.prices
-        console.log(this.planPrices)
         for (const [index, value] of Object.entries(this.planPrices)) {
           if (value === null || value === undefined || index === '') {
             this.disabled = true
           }
         }
-      })
-      .catch(err => console.log(err))
+      }).catch(err => console.log(err))
   }
 }
 </script>
 
 <style scoped>
-
+.v-select.fit {
+  margin-bottom: -20px;
+  margin-top: 6px;
+  padding: 0 !important;
+  max-width: 145px!important;
+}
+.v-select.fit  .v-select__selection--comma {
+  text-overflow: unset;
+}
 </style>

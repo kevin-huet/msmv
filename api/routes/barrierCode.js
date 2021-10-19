@@ -29,7 +29,7 @@ router.post('/barrier/add', passport.authenticate('jwt',{session: false}, null),
     if (existCode) {
         return res.status(400).json({ alreadyExist: 1 })
     }
-    const barrierCode = new BarrierCode({ code }).save()
+    const barrierCode = await new BarrierCode({ code }).save()
     res.status(200).json({ code: barrierCode })
 })
 
@@ -54,7 +54,7 @@ router.post('/barrier/send/public', async (req, res) => {
     code.origin = 'Publique'
     code.customer = { email, firstname, lastname, reason }
     await code.save()
-    res.status(200).json({})
+    res.status(200).json({ code: code.code })
 })
 
 router.get('/barrier/client', async (req, res) => {
