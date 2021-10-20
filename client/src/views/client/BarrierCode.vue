@@ -21,6 +21,7 @@
                   </v-col>
                   <v-col cols="4">
                     <v-text-field
+                      :disabled="this.alert"
                       label="E-mail"
                       v-model="email"
                       :error-messages="emailErrors"
