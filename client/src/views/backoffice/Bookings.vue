@@ -48,7 +48,7 @@
           </Modal>
         </v-col>
         <v-snackbar v-model="snackbar" color="primary" timeout="1500" top="true">
-          test
+          Le statut a bien été modifié
           <template v-slot:action="{ attrs }">
             <v-btn text v-bind="attrs" @click="snackbar = false">
               <v-icon small>mdi-close</v-icon>
