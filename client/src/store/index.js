@@ -48,14 +48,12 @@ export default new Vuex.Store({
       })
     },
     login ({ commit }, user) {
-      console.log(user)
       return new Promise((resolve, reject) => {
         commit('auth_request')
         axios.post(process.env.VUE_APP_BASE_API_URL + 'auth/login', user)
           .then(resp => {
             const token = resp.data.token
             const user = resp.data.user
-            console.log(resp.data)
             localStorage.setItem('token', token)
             axios.defaults.headers.common.Authorization = 'bearer ' + token
             commit('auth_success', token, user)

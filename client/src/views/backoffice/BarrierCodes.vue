@@ -94,7 +94,6 @@ export default {
   mounted () {
     this.$http.get(process.env.VUE_APP_BASE_API_URL + 'code/barrier/all').then(
       r => {
-        console.log(r.data.barrierCodes)
         this.data = r.data.barrierCodes
       }
     ).catch(err => {
@@ -103,7 +102,6 @@ export default {
   },
   methods: {
     close (event) {
-      console.log(event)
       this.dialog = event
     },
     deleteItem (item) {

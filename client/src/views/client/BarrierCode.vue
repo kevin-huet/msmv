@@ -135,7 +135,6 @@ export default {
         }
       }).then(r => {
         this.customer = r.data.customer
-        console.log(this.customer)
         if (!this.customer) {
           this.toStep3()
         } else {

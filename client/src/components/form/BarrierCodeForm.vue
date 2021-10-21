@@ -51,7 +51,6 @@ export default {
       this.$http.post(process.env.VUE_APP_BASE_API_URL + 'code/barrier/add', {
         code: this.code
       }).then(r => {
-        console.log(r.data.code)
         this.error = false
         this.$emit('tableUpdateEvent', r.data.code)
         this.dialogState = false

@@ -101,7 +101,6 @@ export default {
         reduce: this.reduce,
         expiration: this.date
       }).then(r => {
-        console.log(r.data)
         this.$emit('tableUpdateEvent', r.data.promoCode)
         this.dialogState = false
       }).catch(err => {

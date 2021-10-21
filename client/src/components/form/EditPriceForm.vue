@@ -47,14 +47,12 @@ export default {
   },
   methods: {
     submit: function () {
-      console.log(this.planPrices)
       axios.post(process.env.VUE_APP_BASE_API_URL + 'booking/prices/standard/set', {
         child: this.child,
         young: this.young,
         adult: this.adult
       }).then(r => {
         this.dialogState = false
-        console.log(r)
       }).catch()
     }
   },
@@ -62,7 +60,6 @@ export default {
     this.adult = (this.planPrices.adult) ? this.planPrices.adult.price : 0
     this.young = (this.planPrices.young) ? this.planPrices.young.price : 0
     this.child = (this.planPrices.child) ? this.planPrices.child.price : 0
-    console.log(this.adult)
   }
 }
 </script>

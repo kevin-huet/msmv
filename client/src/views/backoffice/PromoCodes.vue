@@ -61,7 +61,6 @@ export default {
   components: { Modal, Breadcrumbs, PromoCodeForm },
   methods: {
     close (event) {
-      console.log(event)
       this.dialog = event
     },
     tableUpdateEvent (event) {

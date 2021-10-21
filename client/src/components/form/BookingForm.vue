@@ -171,7 +171,6 @@ export default {
 
   watch: {
     child (val) {
-      console.log(this.planPrices.child.price)
       this.price = (this.planPrices.child.price * this.child) + (this.planPrices.adult.price * this.adult) + (this.planPrices.young.price * this.young)
     },
     young (val) {
@@ -198,7 +197,6 @@ export default {
           }
         }
       }).then(r => {
-        console.log('send event')
         this.dialogState = false
       })
     }

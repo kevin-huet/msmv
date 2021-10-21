@@ -67,12 +67,10 @@ export default {
   },
   methods: {
     close (event) {
-      console.log(event)
       this.dialog = event
     }
   },
   mounted () {
-    console.log(process.env.VUE_APP_BASE_API_URL)
     this.$http.get(process.env.VUE_APP_BASE_API_URL + 'booking/prices/standard')
       .then(r => {
         this.prices = r.data.prices

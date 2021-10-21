@@ -109,8 +109,6 @@ export default {
   },
   methods: {
     updateStatus (value) {
-      console.log(value)
-      console.log(this.clickItem)
       this.$http.put(process.env.VUE_APP_BASE_API_URL + 'booking/update-status', {
         id: this.clickItem._id,
         status: value
