@@ -3,13 +3,14 @@
     <v-card class="pa-4" color="grey lighten-4">
       <Breadcrumbs :items="routes"></Breadcrumbs>
       <v-row dense>
-        <BackofficeCategory class="my-6" v-for="category in categories" v-bind:key="category.index"
+        <v-col cols="12" sm="6" md="6" lg="6" v-for="category in categories" v-bind:key="category.index">
+        <BackofficeCategory class="my-4"
                             :title="category.title"
                             :description="category.description"
                             :link="category.link"
                             :icon="category.icon"
-                            :size="6"
                             :disabled="category.disabled"/>
+        </v-col>
       </v-row>
     </v-card>
   </v-container>

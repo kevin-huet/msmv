@@ -39,7 +39,6 @@
 
 <script>
 import Modal from '@/components/Modal'
-import axios from 'axios'
 import Breadcrumbs from '@/components/bars/Breadcrumbs'
 import EditPriceForm from '@/components/form/EditPriceForm'
 export default {
@@ -74,7 +73,7 @@ export default {
   },
   mounted () {
     console.log(process.env.VUE_APP_BASE_API_URL)
-    axios.get(process.env.VUE_APP_BASE_API_URL + 'booking/prices/standard')
+    this.$http.get(process.env.VUE_APP_BASE_API_URL + 'booking/prices/standard')
       .then(r => {
         this.prices = r.data.prices
         this.data = [

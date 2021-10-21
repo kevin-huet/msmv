@@ -1,5 +1,4 @@
 <template>
-  <v-col :cols="(size) ? size : 4">
     <v-card class="mx-auto">
       <v-list-item three-line>
         <v-list-item-content>
@@ -22,7 +21,6 @@
         </router-link>
       </v-card-actions>
     </v-card>
-  </v-col>
 </template>
 
 <script>

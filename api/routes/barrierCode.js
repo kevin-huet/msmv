@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport')
 const BarrierCode = require('../models/barrierCode.model')
+const mailer = require('../middlewares/mailer')
 
 router.get('/barrier/all', passport.authenticate('jwt',{session: false}), async (req, res, next) => {
     const barrierCodes = await BarrierCode.find({})
@@ -54,6 +55,8 @@ router.post('/barrier/send/public', async (req, res) => {
     code.origin = 'Publique'
     code.customer = { email, firstname, lastname, reason }
     await code.save()
+    if (!mailer.sendMail(email, 'Mont Saint Michel Voyages - Votre code barrière', `<h3>${code.code}</h3>`))
+        return res.status(500).json({})
     res.status(200).json({ code: code.code })
 })
 
@@ -82,6 +85,7 @@ router.post('/barrier/use-barrier-code', async (req, res) => {
         phone: null
     }
     await code.save()
+    mailer.sendMail(email, 'Mont Saint Michel Voyages - Votre code barrière', `<h3>${code.code}</h3>`)
     // send mail function
     res.status(200).json({ code })
 })

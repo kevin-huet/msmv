@@ -16,6 +16,7 @@
     "roboto-fontface": "*",
     "vue": "^2.6.11",
     "vue-json-csv": "^1.2.12",
+    "vue-meta": "^2.4.0",
     "vue-recaptcha-v3": "^1.9.0",
     "vue-router": "^3.2.0",
     "vuelidate": "^0.7.6",

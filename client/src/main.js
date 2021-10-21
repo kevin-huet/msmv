@@ -7,6 +7,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import store from './store'
 import Axios from 'axios'
 import Vuelidate from 'vuelidate'
+import VueMeta from 'vue-meta'
 
 Vue.prototype.$http = Axios
 const token = localStorage.getItem('token')
@@ -14,7 +15,7 @@ if (token) {
   Vue.prototype.$http.defaults.headers.common.Authorization = 'bearer ' + token
 }
 Vue.config.productionTip = false
-
+Vue.use(VueMeta)
 Vue.use(Vuelidate)
 new Vue({
   router,

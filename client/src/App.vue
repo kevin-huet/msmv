@@ -20,6 +20,9 @@ export default {
   },
   methods: {
   },
+  metaInfo: {
+    title: 'Mont Saint Michel Voyages'
+  },
   created: function () {
     this.$http.interceptors.response.use(undefined, function (err) {
       return new Promise(function (resolve, reject) {
