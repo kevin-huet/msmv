@@ -3,7 +3,7 @@
     <v-app-bar>
       <v-app-bar-nav-icon class="d-flex d-sm-none" @click="drawer = true"></v-app-bar-nav-icon>
       <v-avatar style="width: 120px" :tile="true">
-        <img src="@/assets/msmv_logo.webp" alt="logo">
+        <img src="@/assets/msmv_logo.webp" alt="logo" height="64px" width="100%">
       </v-avatar>
       <v-spacer></v-spacer>
       <v-menu

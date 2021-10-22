@@ -47,7 +47,7 @@
               <BookingForm @close="close" :dialog="dialog" :planPrices="this.planPrices"></BookingForm>
           </Modal>
         </v-col>
-        <v-snackbar v-model="snackbar" color="primary" timeout="1500" top="true">
+        <v-snackbar v-model="snackbar" color="primary" timeout="1500" :top=true>
           Le statut a bien été modifié
           <template v-slot:action="{ attrs }">
             <v-btn text v-bind="attrs" @click="snackbar = false">

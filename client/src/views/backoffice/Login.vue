@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import LoginForm from '@/components/form/LoginForm'
+const LoginForm = () => import('@/components/form/LoginForm')
 export default {
   name: 'Login',
   components: { LoginForm }
