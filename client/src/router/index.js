@@ -1,69 +1,25 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store/index'
-
+import { BackOfficeRoutes } from './backoffice'
 Vue.use(VueRouter)
 
-const routes = [
-  {
-    path: '/backoffice',
-    name: 'Backoffice',
-    meta: {
-      requiresAuth: true
-    },
-    component: () => import('../views/backoffice/Home')
-  },
-  {
-    path: '/backoffice/bookings',
-    name: 'Bookings',
-    meta: {
-      requiresAuth: true
-    },
-    component: () => import('../views/backoffice/Bookings')
-  },
-  {
-    path: '/backoffice/code/barrier',
-    name: 'BarrierCodes',
-    meta: {
-      requiresAuth: true
-    },
-    component: () => import('../views/backoffice/BarrierCodes')
-  },
-  {
-    path: '/backoffice/code/promo',
-    name: 'PromoCodes',
-    meta: {
-      requiresAuth: true
-    },
-    component: () => import('../views/backoffice/PromoCodes')
-  },
+let routes = [
   {
     path: '/login',
     name: 'Login',
     component: () => import('../views/backoffice/Login')
   },
   {
-    path: '/backoffice/pricing',
-    name: 'Pricing',
-    meta: {
-      requiresAuth: true
-    },
-    component: () => import('../views/backoffice/Pricing')
-  },
-  {
     path: '/barrier-code',
     name: 'ClientBarrierCode',
     component: () => import('../views/client/BarrierCode')
-  },
-  {
-    path: '/backoffice/users',
-    name: 'Users',
-    component: () => import('../views/backoffice/Users')
   },
   { path: '/404', component: () => import('../views/error/404.vue') },
   { path: '*', redirect: '/404' }
 ]
 
+routes = routes.concat(BackOfficeRoutes)
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,

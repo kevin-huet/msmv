@@ -35,11 +35,17 @@ router.get('/prices/all', passport.authenticate('jwt',{session: false}, null), a
 })
 
 router.post('/add', passport.authenticate('jwt',{session: false}), async (req, res) => {
-    const { firstname, lastname, email, phone, visitDate, comment, plans } = req.body
-    console.log(req.body)
+    const { firstname, lastname, email, phone, visitDate, comment, plans, vehicles } = req.body
+    const child = await Prices.findOne({ plan: 'Enfant', category: 'standard' })
+    const young = await Prices.findOne({ plan: 'Jeune', category: 'standard' })
+    const adult = await Prices.findOne({ plan: 'Adulte', category: 'standard' })
+    const price = (child.price * plans.standard.child) + (young.price * plans.standard.young) + (adult.price * plans.standard.adult)
+
     const booking = new Booking({
         firstname: firstname, lastname: lastname, email: email,
-        phone: phone, visitDate: Date.parse(visitDate), price: 200, plans: plans, comment: comment
+        phone: phone, visitDate: Date.parse(visitDate),
+        price: price, plans: plans, comment: comment,
+        vehicles: vehicles
     })
 
     await booking.save()

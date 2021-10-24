@@ -24,7 +24,6 @@ export default {
     title: 'Mont Saint Michel Voyages'
   },
   created () {
-    console.log(process.env.HOST)
     this.$http.interceptors.response.use(undefined, function (err) {
       return new Promise(function (resolve, reject) {
         if (err.status === 401 && err.config && !err.config.__isRetryRequest) {

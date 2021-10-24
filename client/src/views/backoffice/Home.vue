@@ -33,7 +33,7 @@ export default {
         { title: 'Code Barrière', description: '', link: '/backoffice/code/barrier', icon: 'mdi-barcode-scan' },
         { title: 'Edition des prix', description: '', link: '/backoffice/pricing', icon: 'mdi-store' },
         { title: 'Edition du mail de reservation', description: '', link: '/backoffice/bookings/mailing', icon: 'mdi-email-edit', disabled: true },
-        { title: 'Gestion utilisateurs', description: '', link: '/backoffice/users', icon: 'mdi-account', disabled: true }
+        { title: 'Gestion utilisateurs', description: '', link: '/backoffice/users', icon: 'mdi-account' }
       ]
     }
   }

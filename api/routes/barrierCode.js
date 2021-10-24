@@ -55,8 +55,8 @@ router.post('/barrier/send/public', async (req, res) => {
     code.origin = 'Publique'
     code.customer = { email, firstname, lastname, reason }
     await code.save()
-    if (!mailer.sendMail(email, 'Mont Saint Michel Voyages - Votre code barrière', `<h3>${code.code}</h3>`))
-        return res.status(500).json({})
+    //if (!mailer.sendMail(email, 'Mont Saint Michel Voyages - Votre code barrière', `<h3>${code.code}</h3>`))
+    //    return res.status(500).json({})
     res.status(200).json({ code: code.code })
 })
 

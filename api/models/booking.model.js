@@ -30,6 +30,10 @@ const BookingSchema = new mongoose.Schema({
     price: {
         type: Number
     },
+    vehicles: {
+        type: Number,
+        default: 0
+    },
     plans: {
         standard: {
             child: {

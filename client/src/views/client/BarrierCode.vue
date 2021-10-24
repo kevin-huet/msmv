@@ -53,7 +53,10 @@
               <v-card class="mb-12" flat height="120px">
                 <v-row>
                   <v-col cols="8" lg="3" md="4">
-                    <v-select class="mt-8" :items="items" v-model="reason" label="Motif" dense />
+                    <v-select class="mt-8" :items="items" v-model="reason" label="Motif" dense :error-messages="emailErrors"
+                              @input="$v.email.$touch()"
+                              @blur="$v.email.$touch()"
+                              required />
                   </v-col>
                 </v-row>
               </v-card>
@@ -78,7 +81,8 @@
                 </v-row>
                 <v-card-text><a @click="e1 = 1">Modifier mes informations</a></v-card-text>
               </v-card>
-              <v-btn color="success" @click="submitCodeRequest">Générer un code barrière</v-btn>
+              <v-btn v-if="!success" id="btn_generate_code" color="success" @click="submitCodeRequest">Générer un code barrière</v-btn>
+              <v-btn v-if="success" color="success" @click="reloadPage">Commander un nouveau code</v-btn>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
@@ -125,6 +129,9 @@ export default {
     }
   },
   methods: {
+    reloadPage () {
+      window.location.reload()
+    },
     async toStep2 () {
       if (await this.$v.$invalid) {
         return
@@ -144,8 +151,10 @@ export default {
         console.log(err)
       })
     },
-    toStep3 () {
-      this.e1 = 3
+    async toStep3 () {
+      if (this.reason) {
+        this.e1 = 3
+      }
     },
     submitCodeRequest () {
       this.$http.post(process.env.VUE_APP_BASE_API_URL + 'code/barrier/send/public', {

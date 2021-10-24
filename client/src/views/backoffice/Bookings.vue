@@ -28,6 +28,15 @@
             <template v-slot:item.visitDate="{ item }">
               {{ formatDate(item.visitDate) }}
             </template>
+            <template v-slot:item.childPlan="{ item }">
+              {{ item.plans.standard.child }}
+            </template>
+            <template v-slot:item.youngPlan="{ item }">
+              {{ item.plans.standard.young }}
+            </template>
+            <template v-slot:item.adultPlan="{ item }">
+              {{ item.plans.standard.adult }}
+            </template>
             <template v-slot:item.actions="{ item }">
               <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
               <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
@@ -44,7 +53,7 @@
         </v-col>
         <v-col cols="12">
           <Modal @close="close" :dialog="dialog" btn-title="Ajouter une réservation" :component-name="componentName" :disabled="this.disabled">
-              <BookingForm @close="close" :dialog="dialog" :planPrices="this.planPrices"></BookingForm>
+              <BookingForm @close="close" @addBooking="addBooking" :dialog="dialog" :planPrices="this.planPrices"></BookingForm>
           </Modal>
         </v-col>
         <v-snackbar v-model="snackbar" color="primary" timeout="1500" :top=true>
@@ -91,7 +100,10 @@ export default {
         { text: 'Date visite', value: 'visitDate' },
         { text: 'Date création', value: 'createdAt' },
         { text: 'Prix', value: 'price' },
-        { text: 'Forfaits', value: 'plan' },
+        { text: 'Enfant', value: 'childPlan' },
+        { text: 'Jeune', value: 'youngPlan' },
+        { text: 'Adulte', value: 'adultPlan' },
+        { text: 'Véhicules', value: 'vehicles' },
         { text: 'Statut', value: 'status' },
         { text: 'Actions', value: 'actions' }
       ],
@@ -125,6 +137,9 @@ export default {
     close (event) {
       this.dialog = event
     },
+    addBooking (item) {
+      this.data.push(item)
+    },
     deleteItem (item) {
       this.$http.delete(process.env.VUE_APP_BASE_API_URL + 'booking/delete', {
         data: { id: item._id }
@@ -149,6 +164,7 @@ export default {
   },
   mounted () {
     this.$http.get(process.env.VUE_APP_BASE_API_URL + 'booking/all').then(r => {
+      console.log(r.data.bookings)
       this.data = r.data.bookings
     }).catch(err => {
       console.log(err)
@@ -172,7 +188,7 @@ export default {
   margin-bottom: -20px;
   margin-top: 6px;
   padding: 0 !important;
-  max-width: 145px!important;
+  max-width: 133px!important;
 }
 .v-select.fit  .v-select__selection--comma {
   text-overflow: unset;

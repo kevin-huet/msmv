@@ -28,7 +28,7 @@
           </v-data-table>
         </v-col>
         <v-col cols="12">
-          <Modal @close="close" :dialog="dialog" btn-title="Ajouter">
+          <Modal @close="close" :dialog="dialog" btn-title="Editer les prix">
             <EditPriceForm @close="close" :dialog="dialog" :planPrices="prices"></EditPriceForm>
           </Modal>
         </v-col>

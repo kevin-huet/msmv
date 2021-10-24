@@ -1,5 +1,7 @@
 <template>
-  <form class="login" @submit.prevent="login">
+  <div>
+    <Alert class="mt-3" v-if="this.error" icon="mdi-alert-circle" color="red" border="left" :text="this.errorMessage"></Alert>
+    <form class="login" @submit.prevent="login">
     <v-text-field
       v-model="email"
       :error-messages="emailErrors"
@@ -9,23 +11,25 @@
     <v-text-field
       v-model="password"
       :error-messages="passwordErrors"
-      label="password"
+      label="Mot de passe"
       required
       :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-      :rules="[rules.required, rules.min]"
       :type="show ? 'text' : 'password'"
       @click:append="show = !show"
     ></v-text-field>
-    <v-btn color="success" class="mr-4" type="submit">submit</v-btn>
+    <v-btn color="success" class="mr-4" type="submit">Connexion</v-btn>
   </form>
+  </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { email, maxLength, required } from 'vuelidate/lib/validators'
+import Alert from '../Alert'
 
 export default {
   name: 'LoginForm',
+  components: {Alert},
   mixins: [validationMixin],
 
   validations: {
@@ -33,16 +37,15 @@ export default {
     email: { required, email }
   },
 
-  data: () => ({
-    email: '',
-    password: '',
-    show: false,
-    rules: {
-      required: value => !!value || 'Required.',
-      min: v => v.length >= 8 || 'Min 8 characters',
-      emailMatch: () => ("The email and password you entered don't match")
+  data () {
+    return {
+      email: '',
+      password: '',
+      show: false,
+      error: false,
+      errorMessage: 'Email ou mot de passe incorrect. Veuillez réessayer.'
     }
-  }),
+  },
 
   methods: {
     login: function () {
@@ -50,7 +53,9 @@ export default {
       const password = this.password
       this.$store.dispatch('login', { email, password })
         .then(() => this.$router.push('/backoffice'))
-        .catch(err => console.log(err))
+        .catch(err => {
+          this.error = true
+        })
     }
   },
 
@@ -58,8 +63,8 @@ export default {
     emailErrors () {
       const errors = []
       if (!this.$v.email.$dirty) return errors
-      !this.$v.email.email && errors.push('Must be valid e-mail')
-      !this.$v.email.required && errors.push('E-mail is required')
+      !this.$v.email.email && errors.push('Votre email doit être valide')
+      !this.$v.email.required && errors.push('Ce champ est requis')
       return errors
     },
     passwordErrors () {

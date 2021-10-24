@@ -80,7 +80,19 @@
           </v-card-text>
         </v-card>
       </v-col>
-
+      <v-col cols="12">
+        <v-checkbox
+          v-model="checkbox"
+          label="Véhicules ?"
+        ></v-checkbox>
+      </v-col>
+      <v-col cols="12">
+        <v-col cols="2" v-if="checkbox">
+          <v-card class="pa-3">
+            <v-text-field label="Nombre de véhicule" v-model="nbVehicles" type="number"/>
+          </v-card>
+        </v-col>
+      </v-col>
       <v-col sm="8" cols="12" lg="7">
         <v-text-field v-model="comment" label="Commentaire" required type="text"
         />
@@ -98,7 +110,7 @@
         </v-card>
       </v-col>
       <v-col cols="12">
-        <v-btn class="mr-4" @click="submit">submit</v-btn>
+        <v-btn color="primary" class="mr-4" @click="submit">Valider</v-btn>
       </v-col>
     </v-row>
   </form>
@@ -134,7 +146,9 @@ export default {
       child: 0,
       comment: '',
       date: '',
-      vTextComponent: ''
+      vTextComponent: '',
+      checkbox: false,
+      nbVehicles: 0
     }
   },
 
@@ -189,6 +203,7 @@ export default {
         email: this.email,
         comment: this.comment,
         visitDate: this.date,
+        vehicles: this.nbVehicles,
         plans: {
           standard: {
             child: this.child,
@@ -197,6 +212,7 @@ export default {
           }
         }
       }).then(r => {
+        this.$emit('addBooking', r.data.booking)
         this.dialogState = false
       })
     }
