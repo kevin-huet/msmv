@@ -7,7 +7,6 @@ const sassMiddleware = require('node-sass-middleware')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const passport = require('passport')
-const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
 const authRouter = require('./routes/auth')
 const bookingRouter = require('./routes/booking')
@@ -20,7 +19,7 @@ const cors = require('cors')
 const passportStrategy = require('./middlewares/passport')
 const logger = require('morgan')
 
-mongoose.connect("mongodb://localhost/test", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
 mongoose.connection.once('open',function(){
   console.log('Connected to Mongo')
 }).on('error',function(err) {
@@ -44,7 +43,6 @@ app.use(sassMiddleware({
 }))
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.use('/', indexRouter)
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 app.use('/code', codeBarrierRouter)

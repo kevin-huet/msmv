@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "change-role": "node commands/changeUserRole.js",
+    "create-user": "node commands/createUser.command.js",
+    "purge-mongodb": "node commands/purge.command.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

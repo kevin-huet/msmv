@@ -8,7 +8,6 @@ const rateLimit = require("express-rate-limit")
 const apiLimiter = rateLimit({
     windowMs: 5 * 60 * 1000, // 5 minutes
     max: 10,
-    message: "Vous avez effectué un trop grand nombre d'essaie de connexion, réessayez dans 5 minutes."
 })
 
 router.post('/login', apiLimiter, async function(req, res, next) {
@@ -42,8 +41,8 @@ router.post('/register', async function (req, res, next) {
     if (foundUser) {
         return res.status(403).json({ error: 'Email is already in use'})
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt(10)
+    const hashPassword = await bcrypt.hash(password, salt)
     const newUser = new User({ firstname: first_name, lastname: last_name, email: email, password: hashPassword })
     await newUser.save()
     const token = genToken(newUser)

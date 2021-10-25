@@ -43,7 +43,7 @@ export default {
       password: '',
       show: false,
       error: false,
-      errorMessage: 'Email ou mot de passe incorrect. Veuillez réessayer.'
+      errorMessage: ''
     }
   },
 
@@ -54,6 +54,11 @@ export default {
       this.$store.dispatch('login', { email, password })
         .then(() => this.$router.push('/backoffice'))
         .catch(err => {
+          if (err.response.status === 429) {
+            this.errorMessage = 'Vous avez effectué un trop grand nombre d\'essaie de connexion, réessayez dans 5 minutes.'
+          } else {
+            this.errorMessage = 'Email ou mot de passe incorrect. Veuillez réessayer.'
+          }
           this.error = true
         })
     }
