@@ -10,6 +10,28 @@ const apiLimiter = rateLimit({
     max: 10,
 })
 
+/**
+ * @swagger
+ * /auth/login:
+ *    post:
+ *      tags:
+ *      - auth
+ *      description: login, return jwt and user info (email and id)
+ *      parameters:
+ *      - name: email
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: password
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      responses:
+ *        '200':
+ *          description: success
+ */
 router.post('/login', apiLimiter, async function(req, res, next) {
     const { email, password } = req.body
     let foundUser = await User.findOne( { email } )
@@ -33,6 +55,38 @@ router.post('/login', apiLimiter, async function(req, res, next) {
     }
 })
 
+/**
+ * @swagger
+ * /auth/register:
+ *    post:
+ *      tags:
+ *      - auth
+ *      description: login, return jwt and user info (email and id)
+ *      parameters:
+ *      - name: firstname
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: lastname
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: email
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: password
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      responses:
+ *        '200':
+ *          description: Successfully delete booking
+ */
 router.post('/register', async function (req, res, next) {
     const { first_name, last_name, email, password } = req.body
 
@@ -49,6 +103,43 @@ router.post('/register', async function (req, res, next) {
     res.status(200).json({ token })
 })
 
+/**
+ * @swagger
+ * /auth/create-user:
+ *    post:
+ *      tags:
+ *      - auth
+ *      description: create new user
+ *      parameters:
+ *      - name: firstname
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: lastname
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: email
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: password
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: role
+ *        in: body
+ *        required: true
+ *        schema:
+ *          type: string
+ *      responses:
+ *        '200':
+ *          description: Successfully create user
+ */
 router.post('/create-user', passport.authenticate('jwt',{session: false}), async function (req, res, next) {
     const { firstname, lastname, email, password, role } = req.body
 
