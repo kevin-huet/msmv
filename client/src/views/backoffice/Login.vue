@@ -1,9 +1,16 @@
 <template>
   <v-container>
       <v-row dense>
-        <v-col cols="6" offset="3">
-          <v-card class="pa-4" color="grey lighten-4">
-            <v-col cols="8" offset="2">
+        <v-col cols="12" sm="12" md="8" offset-md="2" lg="8" offset-lg="2">
+          <v-card class="pb-4" color="grey lighten-4">
+            <v-img
+              class="white--text align-end"
+              height="200px"
+              :src="require('@/assets/msmv_banner.webp')"
+            >
+              <v-card-title>Backoffice - Connexion</v-card-title>
+            </v-img>
+            <v-col cols="12" lg="8" offset-lg="2">
               <LoginForm></LoginForm>
             </v-col>
           </v-card>

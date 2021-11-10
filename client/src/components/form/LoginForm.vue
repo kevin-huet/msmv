@@ -1,74 +1,80 @@
 <template>
-  <form>
+  <div>
+    <Alert class="mt-3" v-if="this.error" icon="mdi-alert-circle" color="red" border="left" :text="this.errorMessage"></Alert>
+    <form class="login" @submit.prevent="login">
     <v-text-field
+      v-model="email"
       :error-messages="emailErrors"
       label="Email"
       required
-      @input="$v.name.$touch()"
-      @blur="$v.name.$touch()"
     ></v-text-field>
     <v-text-field
+      v-model="password"
       :error-messages="passwordErrors"
-      label="password"
+      label="Mot de passe"
       required
       :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-      :rules="[rules.required, rules.min]"
       :type="show ? 'text' : 'password'"
       @click:append="show = !show"
     ></v-text-field>
-    <v-btn color="success" class="mr-4" @click="submit">submit</v-btn>
+    <v-btn color="success" class="mr-4" type="submit">Connexion</v-btn>
   </form>
+  </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
 import { email, maxLength, required } from 'vuelidate/lib/validators'
+import Alert from '../Alert'
 
 export default {
   name: 'LoginForm',
+  components: {Alert},
   mixins: [validationMixin],
 
   validations: {
     name: { required, maxLength: maxLength(10) },
-    email: { required, email },
-    checkbox: {
-      checked (val) {
-        return val
-      }
+    email: { required, email }
+  },
+
+  data () {
+    return {
+      email: '',
+      password: '',
+      show: false,
+      error: false,
+      errorMessage: ''
     }
   },
 
-  data: () => ({
-    email: '',
-    show: false,
-    rules: {
-      required: value => !!value || 'Required.',
-      min: v => v.length >= 8 || 'Min 8 characters',
-      emailMatch: () => ("The email and password you entered don't match")
+  methods: {
+    login: function () {
+      const email = this.email
+      const password = this.password
+      this.$store.dispatch('login', { email, password })
+        .then(() => this.$router.push('/backoffice'))
+        .catch(err => {
+          if (err.response.status === 429) {
+            this.errorMessage = 'Vous avez effectué un trop grand nombre d\'essaie de connexion, réessayez dans 5 minutes.'
+          } else {
+            this.errorMessage = 'Email ou mot de passe incorrect. Veuillez réessayer.'
+          }
+          this.error = true
+        })
     }
-  }),
+  },
 
   computed: {
     emailErrors () {
       const errors = []
       if (!this.$v.email.$dirty) return errors
-      !this.$v.email.email && errors.push('Must be valid e-mail')
-      !this.$v.email.required && errors.push('E-mail is required')
+      !this.$v.email.email && errors.push('Votre email doit être valide')
+      !this.$v.email.required && errors.push('Ce champ est requis')
       return errors
     },
     passwordErrors () {
       return []
     }
-  },
-
-  methods: {
-    submit () {
-      this.$v.$touch()
-    }
   }
 }
 </script>
-
-<style scoped>
-
-</style>

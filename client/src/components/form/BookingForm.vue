@@ -1,31 +1,118 @@
 <template>
-  <form>
-    <v-text-field
-      v-model="name"
-      :error-messages="nameErrors"
-      :counter="10"
-      label="Name"
-      required
-      @input="$v.name.$touch()"
-      @blur="$v.name.$touch()"
-    ></v-text-field>
-    <v-text-field
-      v-model="email"
-      :error-messages="emailErrors"
-      label="E-mail"
-      required
-      @input="$v.email.$touch()"
-      @blur="$v.email.$touch()"
-    ></v-text-field>
-    <v-checkbox
-      v-model="checkbox"
-      :error-messages="checkboxErrors"
-      label="Do you agree?"
-      required
-      @change="$v.checkbox.$touch()"
-      @blur="$v.checkbox.$touch()"
-    ></v-checkbox>
-    <v-btn class="mr-4" @click="submit">submit</v-btn>
+  <form @submit.prevent="submit">
+    <v-row>
+      <v-col col="6" sm="6" lg="4">
+        <v-text-field v-model="firstname" :error-messages="nameErrors" label="Nom" required/>
+      </v-col>
+      <v-col col="6" sm="6" lg="4">
+        <v-text-field v-model="lastname" :error-messages="nameErrors" :counter="10" label="Prenom" required/>
+      </v-col>
+      <v-col cols="0" lg="4"></v-col>
+      <v-col cols="12" sm="7" lg="4">
+        <v-text-field v-model="email" :error-messages="emailErrors"
+          label="E-mail" required
+        />
+      </v-col>
+      <v-col cols="12" sm="5" lg="4">
+        <v-text-field v-model="phone" :error-messages="nameErrors" label="Telephone" required
+        />
+      </v-col>
+      <v-col cols="12" sm="6" lg="8">
+
+        <v-menu
+          ref="menu"
+          v-model="menu"
+          :close-on-content-click="false"
+          :return-value.sync="date"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="date"
+              label="Date de visite"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+            v-model="date"
+            no-title
+            scrollable
+          >
+            <v-spacer></v-spacer>
+            <v-btn
+              text
+              color="primary"
+              @click="menu = false"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              text
+              color="primary"
+              @click="$refs.menu.save(date)"
+            >
+              OK
+            </v-btn>
+          </v-date-picker>
+        </v-menu>
+
+      </v-col>
+      <v-col cols="7" sm="7" lg="6">
+        <v-card>
+          <v-card-title>Forfaits</v-card-title>
+          <v-card-text>
+          <v-row>
+        <v-col sm="4">
+          <v-text-field label="enfant" v-model="child" type="number"/>
+        </v-col>
+        <v-col sm="4">
+          <v-text-field label="jeune" v-model="young" type="number"/>
+        </v-col>
+        <v-col sm="4">
+          <v-text-field label="adulte" v-model="adult" type="number"/>
+        </v-col>
+          </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12">
+        <v-checkbox
+          v-model="checkbox"
+          label="Véhicules ?"
+        ></v-checkbox>
+      </v-col>
+      <v-col cols="12">
+        <v-col cols="2" v-if="checkbox">
+          <v-card class="pa-3">
+            <v-text-field label="Nombre de véhicule" v-model="nbVehicles" type="number"/>
+          </v-card>
+        </v-col>
+      </v-col>
+      <v-col sm="8" cols="12" lg="7">
+        <v-text-field v-model="comment" label="Commentaire" required type="text"
+        />
+      </v-col>
+      <v-col cols="12">
+        <v-card>
+          <v-card-title>Résumé de la commande</v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col sm="4">
+                {{ price }} €
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12">
+        <v-btn color="primary" class="mr-4" @click="submit">Valider</v-btn>
+      </v-col>
+    </v-row>
   </form>
 </template>
 
@@ -35,7 +122,7 @@ import { required, maxLength, email } from 'vuelidate/lib/validators'
 export default {
   name: 'BookingForm',
   mixins: [validationMixin],
-
+  props: ['planPrices', 'dialog'],
   validations: {
     name: { required, maxLength: maxLength(10) },
     email: { required, email },
@@ -46,13 +133,34 @@ export default {
     }
   },
 
-  data: () => ({
-    name: '',
-    email: '',
-    checkbox: false
-  }),
+  data () {
+    return {
+      price: 0,
+      menu: false,
+      firstname: '',
+      lastname: '',
+      phone: '',
+      email: '',
+      young: 0,
+      adult: 0,
+      child: 0,
+      comment: '',
+      date: '',
+      vTextComponent: '',
+      checkbox: false,
+      nbVehicles: 0
+    }
+  },
 
   computed: {
+    dialogState: {
+      get () {
+        return this.dialog
+      },
+      set (val) {
+        this.$emit('close', val)
+      }
+    },
     checkboxErrors () {
       const errors = []
       if (!this.$v.checkbox.$dirty) return errors
@@ -75,9 +183,38 @@ export default {
     }
   },
 
+  watch: {
+    child (val) {
+      this.price = (this.planPrices.child.price * this.child) + (this.planPrices.adult.price * this.adult) + (this.planPrices.young.price * this.young)
+    },
+    young (val) {
+      this.price = (this.planPrices.child.price * this.child) + (this.planPrices.adult.price * this.adult) + (this.planPrices.young.price * this.young)
+    },
+    adult (val) {
+      this.price = (this.planPrices.child.price * this.child) + (this.planPrices.adult.price * this.adult) + (this.planPrices.young.price * this.young)
+    }
+  },
   methods: {
     submit () {
-      this.$v.$touch()
+      this.$http.post(process.env.VUE_APP_BASE_API_URL + 'booking/add', {
+        firstname: this.firstname,
+        lastname: this.lastname,
+        phone: this.phone,
+        email: this.email,
+        comment: this.comment,
+        visitDate: this.date,
+        vehicles: this.nbVehicles,
+        plans: {
+          standard: {
+            child: this.child,
+            young: this.young,
+            adult: this.adult
+          }
+        }
+      }).then(r => {
+        this.$emit('addBooking', r.data.booking)
+        this.dialogState = false
+      })
     }
   }
 }

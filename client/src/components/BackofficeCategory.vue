@@ -1,5 +1,4 @@
 <template>
-  <v-col :cols="(size) ? size : 4">
     <v-card class="mx-auto">
       <v-list-item three-line>
         <v-list-item-content>
@@ -15,19 +14,18 @@
         </v-list-item-icon>
       </v-list-item>
       <v-card-actions>
-        <router-link :to="link" class="link">
-        <v-btn color="success">
+        <router-link :event="!disabled ? 'click' : ''" :disabled="disabled" :to="link" class="link">
+        <v-btn :disabled="disabled" color="success">
           Accèder
         </v-btn>
         </router-link>
       </v-card-actions>
     </v-card>
-  </v-col>
 </template>
 
 <script>
 export default {
-  props: ['title', 'description', 'link', 'size', 'icon'],
+  props: ['title', 'description', 'link', 'size', 'icon', 'disabled'],
   name: 'BackofficeCategory'
 }
 </script>

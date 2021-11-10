@@ -1,13 +1,13 @@
 <template>
   <v-container>
-    <v-card class="pa-4">
+    <v-card class="pa-4" color="grey lighten-4">
       <Breadcrumbs :items="routes"></Breadcrumbs>
       <v-row>
         <v-col cols="4">
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
-            label="Search"
+            label="Rechercher"
             single-line
             hide-details>
           </v-text-field>
@@ -17,13 +17,33 @@
             :search="search"
             :headers="headers"
             :items="data"
-            :items-per-page="5"
+            :items-per-page="10"
+            :header-props="{
+              sortByText: 'Trier par'
+            }"
+            :footer-props="{
+              'page-text': '',
+              'items-per-page-text':'Elements par page'
+            }"
             class="elevation-1">
+            <template v-slot:item.createAt="{ item }">
+              {{ formatDate(item.createAt) }}
+            </template>
+            <template v-slot:item.expiration="{ item }">
+              {{ formatDate(item.expiration) }}
+            </template>
+            <template v-slot:no-data>
+                Aucune donnée
+            </template>
+            <template v-slot:item.actions="{ item }">
+              <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+              <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+            </template>
           </v-data-table>
         </v-col>
         <v-col cols="12">
-          <Modal btn-title="Ajouter un code" :component-name="componentName">
-            <component :is="componentName"></component>
+          <Modal @close="close" :dialog="dialog" btn-title="Ajouter un code">
+            <PromoCodeForm @close="close" :dialog="dialog" @tableUpdateEvent="tableUpdateEvent"></PromoCodeForm>
           </Modal>
         </v-col>
       </v-row>
@@ -35,32 +55,63 @@
 import Breadcrumbs from '@/components/bars/Breadcrumbs'
 import Modal from '@/components/Modal'
 import PromoCodeForm from '@/components/form/PromoCodeForm'
+import moment from 'moment'
 export default {
   name: 'PromoCodes',
   components: { Modal, Breadcrumbs, PromoCodeForm },
+  methods: {
+    close (event) {
+      this.dialog = event
+    },
+    tableUpdateEvent (event) {
+      this.data.push(event)
+    },
+    formatDate (value) {
+      return moment(value).format('DD/MM/YYYY')
+    },
+    editItem (item) {
+
+    },
+    deleteItem (item) {
+      this.$http.delete(process.env.VUE_APP_BASE_API_URL + 'code/promo/delete', {
+        data: {
+          id: item._id
+        }
+      }).then(r => {
+        this.editedIndex = this.data.indexOf(item)
+        this.data.splice(this.editedIndex, 1)
+        console.log(r)
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  },
   data () {
     return {
+      dialog: false,
       componentName: 'PromoCodeForm',
       routes: [
-        { text: 'Accueil Backoffice', disabled: false, href: '/backoffice' },
+        { text: 'Accueil Backoffice', disabled: false, exact: true, to: '/backoffice' },
         { text: 'Codes promo', disabled: true, href: '/backoffice/code/promo' }
       ],
       headers: [
-        { text: 'Nom', value: 'name' },
-        { text: 'Email', value: 'email' },
-        { text: 'Date visite', value: 'visiteDate' },
-        { text: 'Date création', value: 'createdAt' },
-        { text: 'Prix', value: 'price' },
-        { text: 'Forfaits', value: 'plan' },
-        { text: 'Statut', value: 'price' },
-        { text: 'Actions', value: 'price' }
+        { text: 'Code', value: 'code' },
+        { text: 'Reduction', value: 'amount' },
+        { text: 'Créé le', value: 'createAt' },
+        { text: "Valide jusqu'au", value: 'expiration' },
+        { text: 'Actions', value: 'actions' }
       ],
       search: '',
       data: [
-        { name: 'test' },
-        { name: 'zebi' }
       ]
     }
+  },
+  mounted () {
+    this.$http.get(process.env.VUE_APP_BASE_API_URL + 'code/promo/all').then(r => {
+      this.data = r.data.promoCodes
+    }).catch(err => {
+      console.log(err)
+    })
   }
 }
 </script>

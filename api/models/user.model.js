@@ -4,11 +4,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    firstName: {
+    firstname: {
         type: String,
         required: true
     },
-    lastName: {
+    lastname: {
         type: String,
         required: true
     },
@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: 'ROLE_USER'
+        default: 'ROLE_ADMIN'
     }
 })
 module.exports = mongoose.model('User', UserSchema)
