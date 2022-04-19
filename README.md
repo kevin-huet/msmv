@@ -2,9 +2,9 @@
 /api
 Contient tout ce qui est lié au back, sous forme d'api
 
-/api/models : correspond aux schema de bdd
-/api/commands : correspond aux commandes créées pour ajouter un utilisateur par exemple
-/api/routes : correspond à toutes les routes disponible sur l'api
+/api/models : correspond aux schema de bdd<br>
+/api/commands : correspond aux commandes créées pour ajouter un utilisateur par exemple<br>
+/api/routes : correspond à toutes les routes disponible sur l'api<br>
 /api/middlewares : middlewares
 
 Dans un premier temps, pensez à faire un npm install dans ce dossier.
